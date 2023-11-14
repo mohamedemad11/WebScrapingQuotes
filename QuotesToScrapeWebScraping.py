@@ -1,37 +1,37 @@
 import requests 
 
-response = requests.get('https://quotes.toscrape.com')
 
-print(response.status_code)
+unwanted_chars=['“','>','”','<”','”']
+
+def scraping_specific_area(desired_file,appending_writing,class_name):
+    with open(desired_file,appending_writing,encoding='utf-8')   as f: 
+        for line in response.text.split('\n'):
+            if f'class="{class_name}" ' in line :
+                line.strip()
+                new_line=line.split(f'itemprop="{class_name}"')[1]
+                remove_html=new_line.split('<')[0]
+                for char in unwanted_chars :
+                    if char in remove_html :
+                        almost_cleaned_line  = remove_html.replace(char,'')
+                finally_cleaned_line = almost_cleaned_line.replace('>“','')
+                cleaned_line= finally_cleaned_line.replace('&#39;','')
+                f.write(cleaned_line)
+                f.write('\n')
 
 
-with open('cleaned_quotes.txt' ,'w') as file :
 
-    for line in  response.text.split('\n'):
-        if '<span class="text" itemprop="text">' in line :
 
-            only_text = line.replace( '<span class="text" itemprop="text">','')
-            only_text_only=only_text.replace('</span>','')
-            cleaning_apostroph=only_text_only.replace('&#39;',"'")
-            cleaned_first_quotation_mark= cleaning_apostroph.replace('”','')
-            cleaned_text= cleaned_first_quotation_mark.replace('“','')
 
-            file.write(cleaned_text.strip()) 
-            file.write('\n')        
+for i in range(1,11) :
+    response = requests.get(f'https://quotes.toscrape.com/page/{i}/')
+    print(response.status_code)
+    scraping_specific_area('cleaned_quotes.txt','a','text')
+    scraping_specific_area('cleaned_authors.txt','a','author')
+
+
+    
+
+
             
-with open('cleaned_authors.txt','w')   as f: 
-     for line in response.text.split('\n'):
-        if '<span>by <small class="author" ' in line :
-        
-            cleaned_left_place=line.replace('<span>by <small class="author" itemprop="author">','')
-            cleaned_right_place=cleaned_left_place.replace('</small>','')
-        
-
-            f.write(cleaned_right_place.strip())
-            f.write('\n')
-
-
-            
-        
 
 
